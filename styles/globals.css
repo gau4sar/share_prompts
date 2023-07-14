@@ -189,6 +189,15 @@
   animation: spin-anim 1.2s linear infinite;
 }
 
+.small-spinner {
+  width: 32px;
+  height: 32px;
+  border: 4px solid;
+  border-color: #3d5af1 transparent #3d5af1 transparent;
+  border-radius: 50%;
+  animation: spin-anim 1.2s linear infinite;
+}
+
 @keyframes spin-anim {
   0% {
     transform: rotate(0deg);
