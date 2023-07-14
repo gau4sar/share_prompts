@@ -4,9 +4,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
+import { IS_LOGGED_IN } from "@utils/Constant";
 
 const Nav = () => {
   const { data: session } = useSession();
+
+  const [isLoggedIn, setLoggedIn] = useState(false);
 
   const [providers, setProviders] = useState(null);
   const [toggleDropdown, setToggleDropdown] = useState(false);
@@ -17,6 +20,20 @@ const Nav = () => {
       setProviders(res);
     })();
   }, []);
+
+  useEffect(() => {
+    console.log("session-> " + session);
+
+    if (session == undefined || session?.user == null) {
+      console.log("session == undefined");
+      setLoggedIn(false);
+      localStorage.setItem(IS_LOGGED_IN, false);
+    } else {
+      console.log("session != undefined");
+      setLoggedIn(true);
+      localStorage.setItem(IS_LOGGED_IN, true);
+    }
+  }, [session]);
 
   return (
     <nav className="flex-between w-full mb-16 pt-3">
@@ -33,7 +50,7 @@ const Nav = () => {
 
       {/* Desktop Navigation */}
       <div className="sm:flex hidden">
-        {session?.user ? (
+        {isLoggedIn ? (
           <div className="flex gap-3 md:gap-5">
             <Link href="/create-prompt" className="black_btn">
               Create Post

@@ -5,21 +5,33 @@ import { useState, useEffect } from "react";
 import PromptCard from "./PromptCard";
 
 const PromptCardList = ({ data, handleTagClick }) => {
+  console.log("PromptCardList ", data);
+  if (data.length === 0) {
+    return (
+      <div className="text-xl mt-10 text-black flex flex-row w-full justify-center items-center">
+        No prompts found
+      </div>
+    );
+  }
+
   return (
-    <div className="mt-16 prompt_layout">
-      {data.map((post) => (
-        <PromptCard
-          key={post._id}
-          post={post}
-          handleTagClick={handleTagClick}
-        />
-      ))}
-    </div>
+    <>
+      <div className="mt-15 prompt_layout ">
+        {data.map((post) => (
+          <PromptCard
+            key={post._id}
+            post={post}
+            handleTagClick={handleTagClick}
+          />
+        ))}
+      </div>
+    </>
   );
 };
 
 const Feed = () => {
   const [allPosts, setAllPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Search states
   const [searchText, setSearchText] = useState("");
@@ -27,12 +39,14 @@ const Feed = () => {
   const [searchedResults, setSearchedResults] = useState([]);
 
   const fetchPosts = async () => {
+    setIsLoading(true);
     const response = await fetch("/api/prompt");
     const data = await response.json();
 
     console.log("fetchPosts -> ", data);
 
     setAllPosts(data);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -88,6 +102,8 @@ const Feed = () => {
           data={searchedResults}
           handleTagClick={handleTagClick}
         />
+      ) : isLoading ? (
+        <div className="spinner mt-10"></div>
       ) : (
         <PromptCardList data={allPosts} handleTagClick={handleTagClick} />
       )}
